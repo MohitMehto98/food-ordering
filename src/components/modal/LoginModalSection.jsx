@@ -1,52 +1,41 @@
 import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { object, string, number, date, InferType } from "yup";
+import { useFormik } from "formik";
+import { object, string, number, date } from "yup";
 
-let validation = object({
-	name: string().required(),
-	age: number().required().positive().integer(),
-	email: string().email(),
-	website: string().url().nullable(),
-	createdOn: date().default(() => new Date()),
-});
+const initialValues = { email: "", password: "" };
 
 const LoginModalSection = () => {
+	const { handleBlur, handleChange, handleSubmit, errors, values, touched } =
+		useFormik({
+			initialValues,
+			onSubmit: (values, action) => {
+				console.log(values);
+			},
+		});
+
 	return (
 		<>
-			<div>
-				<Formik
-					initialValues={{ email: "", password: "" }}
-					validate={(values) => {
-						const errors = {};
-						if (!values.email) {
-							errors.email = "Required";
-						} else if (
-							!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-						) {
-							errors.email = "Invalid email address";
-						}
-						return errors;
-					}}
-					onSubmit={(values, { setSubmitting }) => {
-						setTimeout(() => {
-							alert(JSON.stringify(values, null, 2));
-							setSubmitting(false);
-						}, 400);
-					}}
-				>
-					{({ isSubmitting }) => (
-						<Form>
-							<Field type="email" name="email" />
-							<ErrorMessage name="email" component="div" />
-							<Field type="password" name="password" />
-							<ErrorMessage name="password" component="div" />
-							<button type="submit" disabled={isSubmitting}>
-								Submit
-							</button>
-						</Form>
-					)}
-				</Formik>
-			</div>
+			<form onSubmit={handleSubmit}>
+				<label htmlFor="email">Email</label>
+				<input
+					type="email"
+					name="email"
+					onClick={handleChange}
+					onBlur={handleBlur}
+					value={values.email}
+				/>
+				<label htmlFor="password">Password</label>
+				{errors.name && touched ? <p>{errors.email}</p> : null}
+				<input
+					type="password"
+					name="password"
+					onClick={handleChange}
+					onBlur={handleBlur}
+					value={values.password}
+				/>
+				{errors.name && touched ? <p>{errors.password}</p> : null}
+				<button>Submit</button>
+			</form>
 		</>
 	);
 };
