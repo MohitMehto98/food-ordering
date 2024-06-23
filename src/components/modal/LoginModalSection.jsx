@@ -6,6 +6,8 @@ import { useDispatch } from "react-redux";
 import { login } from "../../store/features/authSlice";
 import { auth } from "../../configuration/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { db } from "../../configuration/firebase";
+import { setDoc, doc } from "firebase/firestore";
 
 const initialValues = {
 	name: "",
@@ -18,25 +20,23 @@ const LoginModalSection = () => {
 	const dispatch = useDispatch();
 	const handleSignIn = async (credentials) => {
 		try {
-			const signInResponse = await createUserWithEmailAndPassword(
+			await createUserWithEmailAndPassword(
 				auth,
 				credentials.email,
 				credentials.password
 			);
-
-			// const userInfo = signInResponse.user;
-			// // await
-			// console.log(signInResponse.user);
-			// dispatch(
-			// 	login({
-			// 		userId: userInfo.uid,
-			// 		userName: credentials.name,
-			// 		profileUrl: user.photoURL,
-			// 		loginStatus: true,
-			// 	})
-			// );
+			if (auth?.currentUser) {
+				dispatch(
+					login({
+						userId: auth?.currentUser.uid,
+						userName: credentials.name,
+						profileUrl: auth?.currentUser.photoURL,
+						loginStatus: true,
+					})
+				);
+			}
 		} catch (err) {
-			alert(err);
+			console.log(err);
 		}
 	};
 

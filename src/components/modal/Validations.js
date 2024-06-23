@@ -8,7 +8,7 @@ export const loginValidation = Yup.object({
 		.email("Enter Valid Email")
 		.required("Please Provide Your Email"),
 	password: Yup.string()
-		.min(5, "Please Enter Valid Name")
+		.min(6, "Please Enter Strong Password")
 		.required("Please Provide Password"),
 	confirmPassword: Yup.string()
 		.required("Please Provide Password")
